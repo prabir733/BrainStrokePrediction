@@ -210,23 +210,6 @@
       let bmi = parseFloat(document.getElementById("bmi").value);
       let modelChoice = document.getElementById("model_choice").value;
 
-      // --- Mock prediction logic ---
-      let prob = 0.1; // base probability
-      if (modelChoice === "dt") {
-        prob += (age > 50 ? 0.2 : 0);
-        prob += (hypertension ? 0.15 : 0);
-        prob += (heartDisease ? 0.15 : 0);
-        prob += (glucose > 140 ? 0.2 : 0);
-        prob += (bmi > 30 ? 0.15 : 0);
-      } else if (modelChoice === "logistic") {
-        let z = -5 + 0.06*age + 0.8*hypertension + 1.0*heartDisease + 0.02*glucose + 0.03*bmi;
-        prob = 1 / (1 + Math.exp(-z));
-      } else if (modelChoice === "rf") {
-        prob = 0.1 + (age > 60 ? 0.25 : 0) + (glucose > 150 ? 0.2 : 0) + (bmi > 28 ? 0.15 : 0);
-        if (hypertension || heartDisease) prob += 0.2;
-        prob = Math.min(prob, 0.95);
-      }
-
       // Display result
       let resultDiv = document.getElementById("result");
       let progressBar = document.getElementById("progress-bar");
@@ -250,4 +233,5 @@
   </script>
 </body>
 </html>
+
 
