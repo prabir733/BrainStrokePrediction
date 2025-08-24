@@ -212,7 +212,7 @@
 
       // --- Mock prediction logic ---
       let prob = 0.1; // base probability
-      if (modelChoice === "rule") {
+      if (modelChoice === "dt") {
         prob += (age > 50 ? 0.2 : 0);
         prob += (hypertension ? 0.15 : 0);
         prob += (heartDisease ? 0.15 : 0);
@@ -250,3 +250,4 @@
   </script>
 </body>
 </html>
+
