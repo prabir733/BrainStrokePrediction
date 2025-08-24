@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brain Stroke Prediction</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(17, 24, 39, 0.85);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1s ease-in-out;
+    }
+    h1 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 28px;
+      background: linear-gradient(to right, #3b82f6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    input, select {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      background: rgba(11, 18, 32, 0.8);
+      color: #e2e8f0;
+      transition: all 0.3s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 8px #3b82f6;
+    }
+    button {
+      grid-column: 1 / -1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #3b82f6, #06b6d4);
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59,130,246,0.5);
+    }
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      display: none;
+      animation: fadeIn 1s;
+    }
+    .high { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; }
+    .low { background: rgba(16,185,129,0.2); border: 1px solid #10b981; }
+    .progress {
+      margin-top: 15px;
+      height: 18px;
+      border-radius: 10px;
+      background: #1f2937;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #ef4444, #f59e0b, #10b981);
+      transition: width 1.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    @media (max-width: 720px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Brain Stroke Prediction</h1>
+    <form id="strokeForm" class="form-grid">
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" id="age" required placeholder="Enter age">
+      </div>
+
+      <div class="form-group">
+        <label>Hypertension</label>
+        <select id="hypertension">
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Heart Disease</label>
+        <select id="heart_disease">
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Ever Married</label>
+        <select id="ever_married">
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Work Type</label>
+        <select id="work_type">
+          <option value="Private">Private</option>
+          <option value="Self-employed">Self-employed</option>
+          <option value="Govt_job">Govt Job</option>
+          <option value="Never_worked">Never Worked</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Residence Type</label>
+        <select id="residence_type">
+          <option value="Urban">Urban</option>
+          <option value="Rural">Rural</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Smoking Status</label>
+        <select id="smoking_status">
+          <option value="never smoked">Never Smoked</option>
+          <option value="formerly smoked">Formerly Smoked</option>
+          <option value="smokes">Smokes</option>
+          <option value="Unknown">Unknown</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Average Glucose Level</label>
+        <input type="number" id="glucose" step="0.1" required>
+      </div>
+
+      <div class="form-group">
+        <label>BMI</label>
+        <input type="number" id="bmi" step="0.1" required>
+      </div>
+
+      <div class="form-group">
+        <label>Prediction Model</label>
+        <select id="model_choice">
+          <option value="dt">Decusion Tree</option>
+          <option value="logistic">Logistic Regression </option>
+          <option value="rf">Random Forest </option>
+          <option value="svm">Support Vector Machine</option>
+        </select>
+      </div>
+
+      <button type="submit"> Predict</button>
+    </form>
+
+    <div id="result" class="result"></div>
+    <div class="progress"><div id="progress-bar" class="progress-bar"></div></div>
+  </div>
+
+  <script>
+    document.getElementById("strokeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Collect input values
+      let age = parseFloat(document.getElementById("age").value);
+      let hypertension = parseInt(document.getElementById("hypertension").value);
+      let heartDisease = parseInt(document.getElementById("heart_disease").value);
+      let glucose = parseFloat(document.getElementById("glucose").value);
+      let bmi = parseFloat(document.getElementById("bmi").value);
+      let modelChoice = document.getElementById("model_choice").value;
+
+      // --- Mock prediction logic ---
+      let prob = 0.1; // base probability
+      if (modelChoice === "rule") {
+        prob += (age > 50 ? 0.2 : 0);
+        prob += (hypertension ? 0.15 : 0);
+        prob += (heartDisease ? 0.15 : 0);
+        prob += (glucose > 140 ? 0.2 : 0);
+        prob += (bmi > 30 ? 0.15 : 0);
+      } else if (modelChoice === "logistic") {
+        let z = -5 + 0.06*age + 0.8*hypertension + 1.0*heartDisease + 0.02*glucose + 0.03*bmi;
+        prob = 1 / (1 + Math.exp(-z));
+      } else if (modelChoice === "rf") {
+        prob = 0.1 + (age > 60 ? 0.25 : 0) + (glucose > 150 ? 0.2 : 0) + (bmi > 28 ? 0.15 : 0);
+        if (hypertension || heartDisease) prob += 0.2;
+        prob = Math.min(prob, 0.95);
+      }
+
+      // Display result
+      let resultDiv = document.getElementById("result");
+      let progressBar = document.getElementById("progress-bar");
+      resultDiv.style.display = "block";
+
+      let percent = (prob*100).toFixed(1);
+      if (prob >= 0.5) {
+        resultDiv.className = "result high";
+        resultDiv.innerHTML = `<h2>⚠️ High Risk of Stroke</h2><p>Predicted Probability: <b>${percent}%</b></p>`;
+      } else {
+        resultDiv.className = "result low";
+        resultDiv.innerHTML = `<h2>✅ Low Risk of Stroke</h2><p>Predicted Probability: <b>${percent}%</b></p>`;
+      }
+
+      // Animate progress bar
+      progressBar.style.width = "0%";
+      setTimeout(() => {
+        progressBar.style.width = percent + "%";
+      }, 100);
+    });
+  </script>
+</body>
+</html>
