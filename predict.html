@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brain Stroke Prediction</title>
+  <title>Patient Details - Brain Stroke Prediction</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -112,135 +111,170 @@
 </head>
 <body>
   <div class="container">
-    <h1>🧠 Brain Stroke Prediction</h1>
-    <form id="strokeForm" class="form-grid">
+    <h1>🧑‍⚕️ Patient Details</h1>
+    <form id="predictForm" class="form-grid">
+      <!-- Patient Info -->
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text" id="phone" required>
+      </div>
       <div class="form-group">
         <label>Age</label>
-        <input type="number" id="age" required placeholder="Enter age">
+        <input type="number" id="age" required>
       </div>
       <div class="form-group">
         <label>Gender</label>
-        <select id="gender">
-          <option value="male">Male</option>
+        <select id="gender" required>
+          <option value="">Select option</option>
+          <option value="Male">Male</option>
           <option value="Female">Female</option>
-          <option value="Others">Others</option>
+          <option value="Other">Other</option>
         </select>
       </div>
+
+      <!-- Health Conditions -->
       <div class="form-group">
         <label>Hypertension</label>
-        <select id="hypertension">
-          <option value="0">No</option>
+        <select id="hypertension" required>
+          <option value="">Select option</option>
           <option value="1">Yes</option>
+          <option value="0">No</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Heart Disease</label>
-        <select id="heart_disease">
-          <option value="0">No</option>
+        <select id="heart_disease" required>
+          <option value="">Select option</option>
           <option value="1">Yes</option>
+          <option value="0">No</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Ever Married</label>
-        <select id="ever_married">
-          <option value="No">No</option>
+        <select id="ever_married" required>
+          <option value="">Select option</option>
           <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Work Type</label>
-        <select id="work_type">
-          <option value="Student">Student</option>
+        <select id="work_type" required>
+          <option value="">Select option</option>
           <option value="Private">Private</option>
           <option value="Self-employed">Self-employed</option>
-          <option value="Govt_job">Govt Job</option>
+          <option value="Govt_job">Government Job</option>
+          <option value="children">Children</option>
           <option value="Never_worked">Never Worked</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Residence Type</label>
-        <select id="residence_type">
+        <select id="residence_type" required>
+          <option value="">Select option</option>
           <option value="Urban">Urban</option>
           <option value="Rural">Rural</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Smoking Status</label>
-        <select id="smoking_status">
-          <option value="never smoked">Never Smoked</option>
+        <select id="smoking_status" required>
+          <option value="">Select option</option>
           <option value="formerly smoked">Formerly Smoked</option>
+          <option value="never smoked">Never Smoked</option>
           <option value="smokes">Smokes</option>
           <option value="Unknown">Unknown</option>
         </select>
       </div>
 
+      <!-- Numeric Inputs -->
       <div class="form-group">
-        <label>Average Glucose Level</label>
-        <input type="number" id="glucose" step="0.1" required>
+        <label>Glucose Level</label>
+        <input type="number" id="glucose" required>
       </div>
-
       <div class="form-group">
         <label>BMI</label>
         <input type="number" id="bmi" step="0.1" required>
       </div>
 
+      <!-- Prediction Model Choice -->
       <div class="form-group">
         <label>Prediction Model</label>
-        <select id="model_choice">
-          <option value="dt">Decusion Tree</option>
-          <option value="logistic">Logistic Regression </option>
-          <option value="rf">Random Forest </option>
-          <option value="svm">Support Vector Machine</option>
+        <select id="model" required>
+          <option value="">Select option</option>
+          <option value="Logistic Regression">Logistic Regression</option>
+          <option value="Decision Tree">Decision Tree</option>
+          <option value="Random Forest">Random Forest</option>
+          <option value="SVM">Support Vector Machine</option>
+          <option value="Neural Network">Neural Network</option>
         </select>
       </div>
 
-      <button type="submit"> Predict</button>
+      <button type="submit">Predict Stroke</button>
     </form>
 
+    <!-- Result + Progress Bar -->
     <div id="result" class="result"></div>
     <div class="progress"><div id="progress-bar" class="progress-bar"></div></div>
+
+    <!-- Action Buttons -->
+    <button onclick="window.location.href='role.html'" class="back-btn">⬅ Back to Role Page</button>
+    <button type="button" id="clearBtn" class="clear-btn">🧹 Clear Form</button>
   </div>
 
   <script>
-    document.getElementById("strokeForm").addEventListener("submit", function(e) {
+    document.getElementById("predictForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      // Collect input values
-      let age = parseFloat(document.getElementById("age").value);
-      let hypertension = parseInt(document.getElementById("hypertension").value);
-      let heartDisease = parseInt(document.getElementById("heart_disease").value);
-      let glucose = parseFloat(document.getElementById("glucose").value);
-      let bmi = parseFloat(document.getElementById("bmi").value);
-      let modelChoice = document.getElementById("model_choice").value;
+      // Collect inputs
+      let patient = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        hypertension: document.getElementById("hypertension").value,
+        heart_disease: document.getElementById("heart_disease").value,
+        ever_married: document.getElementById("ever_married").value,
+        work_type: document.getElementById("work_type").value,
+        residence_type: document.getElementById("residence_type").value,
+        smoking_status: document.getElementById("smoking_status").value,
+        glucose: document.getElementById("glucose").value,
+        bmi: document.getElementById("bmi").value,
+        model: document.getElementById("model").value,
+      };
 
-      // Display result
-      let resultDiv = document.getElementById("result");
-      let progressBar = document.getElementById("progress-bar");
-      resultDiv.style.display = "block";
+      // Fake prediction result
+      let prediction = Math.random() > 0.5 ? "Stroke Risk Detected ⚠" : "No Stroke Risk ✅";
+      patient.prediction = prediction;
 
-      let percent = (prob*100).toFixed(1);
-      if (prob >= 0.5) {
-        resultDiv.className = "result high";
-        resultDiv.innerHTML = `<h2>⚠️ High Risk of Stroke</h2><p>Predicted Probability: <b>${percent}%</b></p>`;
-      } else {
-        resultDiv.className = "result low";
-        resultDiv.innerHTML = `<h2>✅ Low Risk of Stroke</h2><p>Predicted Probability: <b>${percent}%</b></p>`;
-      }
+      // Save patient record
+      let patients = JSON.parse(localStorage.getItem("patients")) || [];
+      patients.push(patient);
+      localStorage.setItem("patients", JSON.stringify(patients));
+
+      // Show result
+      let resultBox = document.getElementById("result");
+      resultBox.style.display = "block";
+      resultBox.innerHTML =
+        `<h3>Prediction Result:</h3><p><strong>${prediction}</strong> (Model: ${patient.model})</p>`;
 
       // Animate progress bar
-      progressBar.style.width = "0%";
-      setTimeout(() => {
-        progressBar.style.width = percent + "%";
-      }, 100);
+      let progress = document.getElementById("progress-bar");
+      progress.style.width = "0%";
+      let risk = prediction.includes("Detected") ? 80 : 20;
+      setTimeout(() => { progress.style.width = risk + "%"; }, 100);
+    });
+
+    // Clear form button
+    document.getElementById("clearBtn").addEventListener("click", function() {
+      document.getElementById("predictForm").reset();
+      document.getElementById("result").style.display = "none";
+      document.getElementById("progress-bar").style.width = "0%";
     });
   </script>
 </body>
 </html>
-
-
-
