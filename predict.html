@@ -168,7 +168,7 @@
           <option value="Private">Private</option>
           <option value="Self-employed">Self-employed</option>
           <option value="Govt_job">Government Job</option>
-          <option value="student">Student</option>
+          <option value="children">Children</option>
           <option value="Never_worked">Never Worked</option>
         </select>
       </div>
@@ -187,7 +187,7 @@
           <option value="formerly smoked">Formerly Smoked</option>
           <option value="never smoked">Never Smoked</option>
           <option value="smokes">Smokes</option>
-          
+          <option value="Unknown">Unknown</option>
         </select>
       </div>
 
@@ -210,7 +210,7 @@
           <option value="Decision Tree">Decision Tree</option>
           <option value="Random Forest">Random Forest</option>
           <option value="SVM">Support Vector Machine</option>
-          
+          <option value="Neural Network">Neural Network</option>
         </select>
       </div>
 
@@ -230,7 +230,11 @@
     document.getElementById("predictForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      // Collect inputs
+      // Fake prediction percentage
+      let risk = Math.random() > 0.5 ? 80 : 20;
+      let prediction = risk > 50 ? "Stroke Risk Detected ⚠" : "No Stroke Risk ✅";
+
+      // Collect patient data
       let patient = {
         name: document.getElementById("name").value,
         phone: document.getElementById("phone").value,
@@ -245,13 +249,11 @@
         glucose: document.getElementById("glucose").value,
         bmi: document.getElementById("bmi").value,
         model: document.getElementById("model").value,
+        prediction: prediction,
+        risk: risk
       };
 
-      // Fake prediction result
-      let prediction = Math.random() > 0.5 ? "Stroke Risk Detected ⚠" : "No Stroke Risk ✅";
-      patient.prediction = prediction;
-
-      // Save patient record
+      // Save to localStorage
       let patients = JSON.parse(localStorage.getItem("patients")) || [];
       patients.push(patient);
       localStorage.setItem("patients", JSON.stringify(patients));
@@ -260,12 +262,14 @@
       let resultBox = document.getElementById("result");
       resultBox.style.display = "block";
       resultBox.innerHTML =
-        `<h3>Prediction Result:</h3><p><strong>${prediction}</strong> (Model: ${patient.model})</p>`;
+        `<h3>Prediction Result:</h3>
+         <p><strong>${prediction}</strong> (Model: ${patient.model})</p>
+         <p>Stroke Risk Percentage: <strong>${risk}%</strong></p>`;
 
-      // Animate progress bar
+      // Animate progress bar with dynamic color
       let progress = document.getElementById("progress-bar");
       progress.style.width = "0%";
-      let risk = prediction.includes("Detected") ? 80 : 20;
+      progress.style.background = risk > 50 ? "#ef4444" : "#10b981"; // red or green
       setTimeout(() => { progress.style.width = risk + "%"; }, 100);
     });
 
@@ -278,4 +282,3 @@
   </script>
 </body>
 </html>
-
