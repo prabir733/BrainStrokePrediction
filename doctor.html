@@ -5,59 +5,119 @@
   <title>Doctor Report - Brain Stroke Prediction</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-top: 20px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #94a3b8;
+    table, th, td {
+      border: 1px solid #374151;
+      padding: 8px;
       text-align: left;
     }
-    textarea {
-      grid-column: 1 / -1;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #1f2937;
-      background: #0b1220;
-      color: #e2e8f0;
-      min-height: 120px;
-      resize: vertical;
+    th {
+      background: #1e293b;
+      color: #f1f5f9;
+    }
+    tr:hover {
+      background: rgba(59,130,246,0.2);
+      cursor: pointer;
+    }
+    .selected-row {
+      background: rgba(59,130,246,0.4) !important;
     }
     .report-box {
       margin-top: 25px;
       padding: 20px;
       border-radius: 12px;
       background: rgba(59,130,246,0.15);
-      display: none;
       text-align: left;
     }
-    .btn-download {
-      margin-top: 15px;
-      padding: 12px;
+    .btn-download, .back-btn, .logout, .clear-btn, .delete-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
       border: none;
-      border-radius: 8px;
-      background: #10b981;
-      color: #fff;
+      border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      display: none;
+      font-size: 13px;
     }
-    .btn-download:hover {
-      background: #059669;
+    .btn-download {
+      background: #10b981; color: #fff;
+    }
+    .btn-download:hover { background: #059669; }
+    .back-btn {
+      background: #3b82f6; color: #fff;
+    }
+    .back-btn:hover { background: #2563eb; }
+    .logout {
+      background: #f87171; color: #fff;
+    }
+    .logout:hover { background: #dc2626; }
+    .clear-btn {
+      background: #fbbf24; color: #000;
+    }
+    .clear-btn:hover { background: #f59e0b; }
+    .delete-btn {
+      background: #ef4444; color: #fff;
+      float: right;
+    }
+    .delete-btn:hover { background: #b91c1c; }
+    .saved-reports {
+      margin-top: 30px;
+    }
+    .saved-reports h2 {
+      margin-bottom: 10px;
+    }
+    .report-card {
+      background: #f1f5f9;
+      border-left: 5px solid #3b82f6;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      position: relative;
+    }
+    .report-card small {
+      display: block;
+      color: #555;
+      margin-top: 5px;
+    }
+    #searchReports {
+      padding: 8px;
+      width: 100%;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🩺 Doctor Report</h1>
+    <h1>👨‍⚕️ Doctor Portal</h1>
+
+    <!-- Patient Records -->
+    <h2>📋 Patient Records</h2>
+    <p>👉 Click on a row to auto-fill the report form.</p>
+    <table id="patientsTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Hypertension</th>
+          <th>Heart Disease</th>
+          <th>Glucose</th>
+          <th>BMI</th>
+          <th>Prediction</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Doctor Report Form -->
+    <h2>🩺 Create Doctor Report</h2>
     <form id="reportForm" class="form-grid">
       <div class="form-group">
         <label>Patient Name</label>
@@ -69,11 +129,7 @@
       </div>
       <div class="form-group">
         <label>Gender</label>
-        <select id="patientGender">
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+        <input type="text" id="patientGender" required>
       </div>
       <div class="form-group">
         <label>Patient Phone</label>
@@ -89,28 +145,98 @@
       </div>
       <div class="form-group" style="grid-column: 1 / -1;">
         <label>Report / Observations</label>
-        <textarea id="reportNotes" placeholder="Write your report here..."></textarea>
+        <textarea id="reportNotes" placeholder="Write your report here..." required></textarea>
       </div>
       <button type="submit" style="grid-column: 1 / -1;">Generate Report</button>
     </form>
 
     <!-- Report Preview -->
-    <div id="reportPreview" class="report-box"></div>
+    <div id="reportPreview" class="report-box" style="display:none;"></div>
+    <button id="downloadBtn" class="btn-download" style="display:none;">⬇ Download Report as PDF</button>
+    <button id="clearSelection" class="clear-btn">🧹 Clear Selection</button>
 
-    <!-- Download Button -->
-    <button id="downloadBtn" class="btn-download">⬇ Download Report as PDF</button>
+    <!-- Saved Reports -->
+    <div class="saved-reports">
+      <h2>📑 Saved Reports</h2>
+      <input type="text" id="searchReports" placeholder="🔍 Search by patient name...">
+      <div id="savedReportsList"></div>
+    </div>
 
+    <!-- Navigation Buttons -->
+    <button onclick="window.location.href='role.html'" class="back-btn">⬅ Back to Role Page</button>
     <button onclick="window.location.href='index.html'" class="logout">Logout</button>
   </div>
 
-  <!-- jsPDF CDN -->
+  <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    let selectedRow = null;
     let reportContent = "";
 
+    // Load patients & doctor info
+    window.onload = function() {
+      let patients = JSON.parse(localStorage.getItem("patients")) || [];
+      let tbody = document.querySelector("#patientsTable tbody");
+      tbody.innerHTML = "";
+
+      patients.forEach((p) => {
+        let row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.phone}</td>
+          <td>${p.age}</td>
+          <td>${p.gender}</td>
+          <td>${p.hypertension == "1" ? "Yes" : "No"}</td>
+          <td>${p.heart_disease == "1" ? "Yes" : "No"}</td>
+          <td>${p.glucose}</td>
+          <td>${p.bmi}</td>
+          <td>${p.prediction}</td>
+        `;
+        row.addEventListener("click", function() {
+          document.querySelectorAll("#patientsTable tr").forEach(r => r.classList.remove("selected-row"));
+          row.classList.add("selected-row");
+          selectedRow = row;
+          document.getElementById("patientName").value = p.name;
+          document.getElementById("patientAge").value = p.age;
+          document.getElementById("patientGender").value = p.gender;
+          document.getElementById("patientPhone").value = p.phone;
+          window.scrollTo({ top: document.getElementById("reportForm").offsetTop, behavior: "smooth" });
+        });
+        tbody.appendChild(row);
+      });
+
+      // Load saved doctor info
+      document.getElementById("doctorName").value = localStorage.getItem("doctorName") || "";
+      document.getElementById("doctorPhone").value = localStorage.getItem("doctorPhone") || "";
+
+      // Load saved reports
+      loadSavedReports();
+    };
+
+    // Save doctor info
+    document.getElementById("doctorName").addEventListener("input", function() {
+      localStorage.setItem("doctorName", this.value);
+    });
+    document.getElementById("doctorPhone").addEventListener("input", function() {
+      localStorage.setItem("doctorPhone", this.value);
+    });
+
+    // Clear Selection
+    document.getElementById("clearSelection").addEventListener("click", function() {
+      if (selectedRow) selectedRow.classList.remove("selected-row");
+      selectedRow = null;
+      let doctorName = document.getElementById("doctorName").value;
+      let doctorPhone = document.getElementById("doctorPhone").value;
+      document.getElementById("reportForm").reset();
+      document.getElementById("doctorName").value = doctorName;
+      document.getElementById("doctorPhone").value = doctorPhone;
+      document.getElementById("reportPreview").style.display = "none";
+      document.getElementById("downloadBtn").style.display = "none";
+    });
+
+    // Generate Report
     document.getElementById("reportForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
       let name = document.getElementById("patientName").value;
       let age = document.getElementById("patientAge").value;
       let gender = document.getElementById("patientGender").value;
@@ -119,32 +245,95 @@
       let doctorPhone = document.getElementById("doctorPhone").value;
       let notes = document.getElementById("reportNotes").value;
 
-      // Create report text
       reportContent = `
 Patient Report
 ---------------------------
 Patient Name: ${name}
 Age: ${age}
 Gender: ${gender}
-Patient Phone: ${patientPhone}
+Phone: ${patientPhone}
 
 Doctor Name: ${doctorName}
 Doctor Phone: ${doctorPhone}
 
-Observations / Report:
+Observations:
 ${notes}
 `;
 
-      // Show on page
+      // Show preview
       let reportDiv = document.getElementById("reportPreview");
       reportDiv.style.display = "block";
       reportDiv.innerHTML = reportContent.replace(/\n/g, "<br>");
-
-      // Show download button
       document.getElementById("downloadBtn").style.display = "inline-block";
+
+      // Save report
+      let savedReports = JSON.parse(localStorage.getItem("savedReports")) || [];
+      savedReports.push({
+        id: Date.now(),
+        patientName: name,
+        doctorName: doctorName,
+        date: new Date().toLocaleString(),
+        report: reportContent
+      });
+      localStorage.setItem("savedReports", JSON.stringify(savedReports));
+      loadSavedReports();
     });
 
-    // Download as PDF
+    // Load saved reports
+    function loadSavedReports() {
+      let savedReports = JSON.parse(localStorage.getItem("savedReports")) || [];
+      let container = document.getElementById("savedReportsList");
+      container.innerHTML = "";
+      if (savedReports.length === 0) {
+        container.innerHTML = "<p>No reports saved yet.</p>";
+        return;
+      }
+      savedReports.forEach((r) => {
+        let div = document.createElement("div");
+        div.classList.add("report-card");
+        div.innerHTML = `
+          <button class="delete-btn" onclick="deleteReport(${r.id})">🗑 Delete</button>
+          <strong>${r.patientName}</strong> - by Dr. ${r.doctorName}
+          <small>${r.date}</small>
+          <pre style="white-space:pre-wrap; font-size:13px; margin-top:5px;">${r.report}</pre>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Delete report
+    function deleteReport(id) {
+      let savedReports = JSON.parse(localStorage.getItem("savedReports")) || [];
+      savedReports = savedReports.filter(r => r.id !== id);
+      localStorage.setItem("savedReports", JSON.stringify(savedReports));
+      loadSavedReports();
+    }
+
+    // Search saved reports
+    document.getElementById("searchReports").addEventListener("input", function() {
+      let query = this.value.toLowerCase();
+      let savedReports = JSON.parse(localStorage.getItem("savedReports")) || [];
+      let filtered = savedReports.filter(r => r.patientName.toLowerCase().includes(query));
+      let container = document.getElementById("savedReportsList");
+      container.innerHTML = "";
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>No matching reports found.</p>";
+        return;
+      }
+      filtered.forEach((r) => {
+        let div = document.createElement("div");
+        div.classList.add("report-card");
+        div.innerHTML = `
+          <button class="delete-btn" onclick="deleteReport(${r.id})">🗑 Delete</button>
+          <strong>${r.patientName}</strong> - by Dr. ${r.doctorName}
+          <small>${r.date}</small>
+          <pre style="white-space:pre-wrap; font-size:13px; margin-top:5px;">${r.report}</pre>
+        `;
+        container.appendChild(div);
+      });
+    });
+
+    // Download PDF
     document.getElementById("downloadBtn").addEventListener("click", function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
