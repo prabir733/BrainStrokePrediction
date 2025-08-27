@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Report - Brain Stroke Prediction</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #94a3b8;
+      text-align: left;
+    }
+    textarea {
+      grid-column: 1 / -1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      background: #0b1220;
+      color: #e2e8f0;
+      min-height: 120px;
+      resize: vertical;
+    }
+    .report-box {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(59,130,246,0.15);
+      display: none;
+      text-align: left;
+    }
+    .btn-download {
+      margin-top: 15px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #10b981;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+    }
+    .btn-download:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🩺 Doctor Report</h1>
+    <form id="reportForm" class="form-grid">
+      <div class="form-group">
+        <label>Patient Name</label>
+        <input type="text" id="patientName" required>
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" id="patientAge" required>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="patientGender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Patient Phone</label>
+        <input type="text" id="patientPhone" required>
+      </div>
+      <div class="form-group">
+        <label>Doctor Name</label>
+        <input type="text" id="doctorName" required>
+      </div>
+      <div class="form-group">
+        <label>Doctor Phone</label>
+        <input type="text" id="doctorPhone" required>
+      </div>
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label>Report / Observations</label>
+        <textarea id="reportNotes" placeholder="Write your report here..."></textarea>
+      </div>
+      <button type="submit" style="grid-column: 1 / -1;">Generate Report</button>
+    </form>
+
+    <!-- Report Preview -->
+    <div id="reportPreview" class="report-box"></div>
+
+    <!-- Download Button -->
+    <button id="downloadBtn" class="btn-download">⬇ Download Report as PDF</button>
+
+    <button onclick="window.location.href='index.html'" class="logout">Logout</button>
+  </div>
+
+  <!-- jsPDF CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let reportContent = "";
+
+    document.getElementById("reportForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      let name = document.getElementById("patientName").value;
+      let age = document.getElementById("patientAge").value;
+      let gender = document.getElementById("patientGender").value;
+      let patientPhone = document.getElementById("patientPhone").value;
+      let doctorName = document.getElementById("doctorName").value;
+      let doctorPhone = document.getElementById("doctorPhone").value;
+      let notes = document.getElementById("reportNotes").value;
+
+      // Create report text
+      reportContent = `
+Patient Report
+---------------------------
+Patient Name: ${name}
+Age: ${age}
+Gender: ${gender}
+Patient Phone: ${patientPhone}
+
+Doctor Name: ${doctorName}
+Doctor Phone: ${doctorPhone}
+
+Observations / Report:
+${notes}
+`;
+
+      // Show on page
+      let reportDiv = document.getElementById("reportPreview");
+      reportDiv.style.display = "block";
+      reportDiv.innerHTML = reportContent.replace(/\n/g, "<br>");
+
+      // Show download button
+      document.getElementById("downloadBtn").style.display = "inline-block";
+    });
+
+    // Download as PDF
+    document.getElementById("downloadBtn").addEventListener("click", function() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("times", "normal");
+      doc.setFontSize(12);
+      doc.text(reportContent, 20, 20);
+      doc.save("Patient_Report.pdf");
+    });
+  </script>
+</body>
+</html>
