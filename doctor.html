@@ -149,6 +149,7 @@
           <th>Glucose</th>
           <th>BMI</th>
           <th>Prediction</th>
+          <th>Model Name</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -216,6 +217,7 @@
           <td>${p.glucose}</td>
           <td>${p.bmi}</td>
           <td>${p.prediction} (${p.risk || 0}%)</td>
+          <td>${p.model}</td>
           <td><button class="delete-btn" onclick="deletePatient(${index})">🗑</button></td>
         `;
 
@@ -312,4 +314,3 @@ ${notes}
   </script>
 </body>
 </html>
-
