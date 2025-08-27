@@ -4,12 +4,32 @@
   <meta charset="UTF-8">
   <title>Select Role - Brain Stroke Prediction</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .btn-role {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      background: linear-gradient(to right, #3b82f6, #06b6d4);
+      color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-role:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59,130,246,0.5);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Select Your Role</h1>
-    <button onclick="window.location.href='predict.html'">Patient</button>
-    <button onclick="window.location.href='doctor.html'">Doctor</button>
+    <h1>Select Portal</h1>
+    <button class="btn-role" onclick="window.location.href='predict.html'">Patient Details</button>
+    <button class="btn-role" onclick="window.location.href='doctor.html'">Doctor Report</button>
+    <a href="index.html">⬅ Back to Login</a>
   </div>
 </body>
 </html>
