@@ -173,6 +173,15 @@
         </select>
       </div>
       <div class="form-group">
+        <label>Previous Stroke</label>
+        <select id="prev_stroke" required>
+          <option value="">Select option</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label>Ever Married</label>
         <select id="ever_married" required>
           <option value="">Select option</option>
@@ -197,7 +206,6 @@
           <option value="">Select option</option>
           <option value="Urban">Urban</option>
           <option value="Rural">Rural</option>
-          <option value="Semi-Rural">Semi-Rural</option>
         </select>
       </div>
       <div class="form-group">
@@ -208,6 +216,14 @@
           <option value="never smoked">Never Smoked</option>
           <option value="smokes">Smokes</option>
           <option value="Unknown">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Alcohol Consumer</label>
+        <select id="alcohol" required>
+          <option value="">Select option</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
         </select>
       </div>
 
@@ -250,11 +266,9 @@
     document.getElementById("predictForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      // Fake prediction percentage
       let risk = Math.floor(Math.random() * 100);
       let prediction = risk > 50 ? "Stroke Risk Detected ⚠" : "No Stroke Risk ✅";
 
-      // Collect patient data
       let patient = {
         name: document.getElementById("name").value,
         phone: document.getElementById("phone").value,
@@ -262,6 +276,8 @@
         gender: document.getElementById("gender").value,
         hypertension: document.getElementById("hypertension").value,
         heart_disease: document.getElementById("heart_disease").value,
+        prev_stroke: document.getElementById("prev_stroke").value,
+        alcohol: document.getElementById("alcohol").value,
         ever_married: document.getElementById("ever_married").value,
         work_type: document.getElementById("work_type").value,
         residence_type: document.getElementById("residence_type").value,
@@ -273,12 +289,10 @@
         risk: risk
       };
 
-      // Save to localStorage
       let patients = JSON.parse(localStorage.getItem("patients")) || [];
       patients.push(patient);
       localStorage.setItem("patients", JSON.stringify(patients));
 
-      // Show result in center
       let resultBox = document.getElementById("result");
       resultBox.style.display = "block";
       resultBox.innerHTML =
@@ -287,13 +301,11 @@
          <p>Model: ${patient.model}</p>
          <p>Stroke Risk Percentage: <strong>${risk}%</strong></p>`;
 
-      // Animate progress bar
       let progress = document.getElementById("progress-bar");
       progress.style.width = "0%";
-      progress.style.background = risk > 50 ? "#ef4444" : "#10b981"; 
+      progress.style.background = risk > 50 ? "#ef4444" : "#10b981";
       setTimeout(() => { progress.style.width = risk + "%"; }, 100);
     });
   </script>
 </body>
 </html>
-
