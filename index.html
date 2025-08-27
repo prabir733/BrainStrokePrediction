@@ -23,9 +23,11 @@
       let pass = document.getElementById("password").value;
 
       let storedPass = localStorage.getItem(user);
-      if(storedPass && storedPass === pass) {
+      if (storedPass && storedPass === pass) {
+        // Save login session
         sessionStorage.setItem("loggedInUser", user);
-        window.location.href = "predict.html";
+        // Redirect to role selection page
+        window.location.href = "role.html";
       } else {
         alert("Invalid Username or Password !");
       }
